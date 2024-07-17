@@ -34,7 +34,10 @@ public class PlanetService {
 
     public  Planet getPlanetByName(String name) {
         Optional<Planet> planetOptional = planetRepository.findByName(name);
-        return planetOptional.orElseThrow(() -> new RuntimeException("Planet not found"));
+        if(!planetOptional.isPresent()){
+            throw new RuntimeException("Planet not found");
+        }
+        return planetOptional.get();
     }
 
     public Planet getPlanetById(Long id) {

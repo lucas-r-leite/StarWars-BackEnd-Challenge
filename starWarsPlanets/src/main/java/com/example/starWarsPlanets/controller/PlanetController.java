@@ -1,5 +1,6 @@
 package com.example.starWarsPlanets.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.starWarsPlanets.entity.Planet;
@@ -45,18 +47,20 @@ public class PlanetController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Planet>> getAllPlanets() {
-        
+  @GetMapping
+public ResponseEntity<List<Planet>> getAllPlanets(@RequestParam(required = false) String name) {
+    if (name == null) {
         List<Planet> planets = planetService.getAllPlanets();
         return new ResponseEntity<>(planets, HttpStatus.OK);
-    }
-
-    @GetMapping("/search/{name}")
-    public ResponseEntity<Planet> getPlanetByName(@PathVariable String name) {
-        Planet planet = planetService.getPlanetByName(name);
-        return new ResponseEntity<>(planet, HttpStatus.OK);
-    }
+    } else {
+            try {
+                Planet planet = planetService.getPlanetByName(name);
+                return new ResponseEntity<>(Collections.singletonList(planet), HttpStatus.OK);
+            } catch (RuntimeException e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+         }
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<Planet> getPlanetById(@PathVariable Long id) {
