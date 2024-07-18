@@ -26,8 +26,8 @@ public class Planet {
     @Column(name = "name", nullable = false, columnDefinition = "varchar(100)", unique = true)
     private String name;
 
-    @Column(name = "weather", nullable = false, columnDefinition = "varchar(50)")
-    private String weather;
+    @Column(name = "climate", nullable = false, columnDefinition = "varchar(50)")
+    private String climate;
 
     @Column(name = "terrain", nullable = false, columnDefinition = "varchar(50)")
     private String terrain;
