@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        db: ${DB_NAME}
+        user: ${DB_USER}
+        password: ${DB_PASSWORD}
+    environment:
+      spring_datasource_url: jdbc:postgresql://postgres:5432/${DB_NAME}
+      spring_datasource_username: ${DB_USER}
+      spring_datasource_password: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  postgres_data:
